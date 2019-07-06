@@ -37,7 +37,17 @@ class PostController extends Controller
     public function store(Request $request)
     {
 
-                $posts = new Post([
+       /* $validator = $request->validate([
+            'user_id'=>'required',
+            'category_id'=>'required',
+            'title' => 'required',
+            'body' => 'required',
+        ]);
+        if ($validator->fails()){
+            Redirect::back()->with('message', 'error with data ');
+
+        }else{
+            $posts = new Post([
                 'user_id'=>$request->user_id,
                 'category_id'=>$request->category_id,
                 'title' => $request->title,
@@ -45,12 +55,22 @@ class PostController extends Controller
 
             ]);
             $posts->save();
-
             return ($posts);
 
+        }*/
+
+        $validator = $request->validate([
+            'user_id' => 'required',
+            'category_id' => 'required',
+            'title' => 'required',
+            'body' => 'required',
+        ]);
 
 
+            Post::create($request->all());
 
+
+            return $request;
     }
 
     /**
@@ -74,20 +94,21 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if ( $posts = Post::findOrFail($id)){[
+        $posts = Post::findOrFail($id){[
 
-                'user_id'=>$request->user_id,
-                'category_id'=>$request->category_id,
-                'title' => $request->title,
-                'body' => $request->body ];
-
-        }
-
-
-
-
-
+            'user_id' => $request->user_id,
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'body' => $request->body
+        ]};
+        $posts->save();
     }
+
+
+
+
+
+
 
     /**
      * Remove the specified resource from storage.

@@ -15,7 +15,11 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $comments = Comment::all();
+        $comments = Comment::with([
+            'comment:id,body',
+            'userComment:id,name'
+        ])->get();
+
         return $comments;
     }
 
@@ -29,6 +33,7 @@ class CommentController extends Controller
     {
         $comment=new Comment([
             'body'=>$request->body,
+            'user_id'=>$request->user_id,
             'post_id'=>$request->post_id
         ]);
 
@@ -58,7 +63,13 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $posts = Comment::findOrFail($id){[
+            'body' => $request->body,
+            'user_id' => $request->user_id,
+            'category_id' => $request->category_id,
+        ]};
+
+        $posts->save();
     }
 
     /**
@@ -69,6 +80,7 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $comment=Comment::findOrFail($id);
+        $comment->delete();
     }
 }
